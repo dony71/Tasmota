@@ -1,0 +1,196 @@
+/*
+  user_config_override.h - user configuration overrides my_user_config.h for Tasmota
+
+  Copyright (C) 2019  Theo Arends
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef _USER_CONFIG_OVERRIDE_H_
+#define _USER_CONFIG_OVERRIDE_H_
+
+// force the compiler to show a warning to confirm that this file is included
+#warning **** user_config_override.h: Using Settings from this File ****
+
+/*****************************************************************************************************\
+ * USAGE:
+ *   To modify the stock configuration without changing the my_user_config.h file:
+ *   (1) copy this file to "user_config_override.h" (It will be ignored by Git)
+ *   (2) define your own settings below
+ *   (3) for platformio:
+ *         define USE_CONFIG_OVERRIDE as a build flags.
+ *         ie1 : export PLATFORMIO_BUILD_FLAGS='-DUSE_CONFIG_OVERRIDE'
+ *       for Arduino IDE:
+ *         enable define USE_CONFIG_OVERRIDE in my_user_config.h
+ ******************************************************************************************************
+ * ATTENTION:
+ *   - Changes to SECTION1 PARAMETER defines will only override flash settings if you change define CFG_HOLDER.
+ *   - Expect compiler warnings when no ifdef/undef/endif sequence is used.
+ *   - You still need to update my_user_config.h for major define USE_MQTT_TLS.
+ *   - All parameters can be persistent changed online using commands via MQTT, WebConsole or Serial.
+\*****************************************************************************************************/
+
+// -- Master parameter control --------------------
+#undef  CFG_HOLDER
+#define CFG_HOLDER        4617                   // [Reset 1] Change this value to load SECTION1 configuration parameters to flash
+
+// -- Setup your own Wifi settings  ---------------
+#undef  STA_SSID1
+#define STA_SSID1         "HARRIER"             // [Ssid1] Wifi SSID
+
+#undef  STA_PASS1
+#define STA_PASS1         "4088138208"     // [Password1] Wifi password
+
+#undef  STA_SSID2
+#define STA_SSID2         "TechSupport"             // [Ssid1] Wifi SSID
+
+#undef  STA_PASS2
+#define STA_PASS2         "hw_debug"     // [Password1] Wifi password
+
+#undef	WIFI_CONFIG_TOOL
+#define WIFI_CONFIG_TOOL	WIFI_MANAGER
+
+// -- Setup your own MQTT settings  ---------------
+#undef  MQTT_HOST
+#define MQTT_HOST         "10.168.1.40" // [MqttHost]
+
+#undef  MQTT_PORT
+#define MQTT_PORT         1883                   // [MqttPort] MQTT port (10123 on CloudMQTT)
+
+#undef  MQTT_USER
+#define MQTT_USER         "tasmota"         // [MqttUser] Optional user
+
+#undef  MQTT_PASS
+#define MQTT_PASS         "irened0n"         // [MqttPassword] Optional password
+
+//#ifndef USE_MQTT_TLS 
+////#define USE_MQTT_TLS
+//#define USE_MQTT_TLS_CA_CERT      // if using letsencrypt
+//#endif
+
+// You might even pass some parameters from the command line ----------------------------
+// Ie:  export PLATFORMIO_BUILD_FLAGS='-DUSE_CONFIG_OVERRIDE -DMY_IP="192.168.1.99" -DMY_GW="192.168.1.1" -DMY_DNS="192.168.1.1"'
+
+#ifdef MY_IP
+#undef  WIFI_IP_ADDRESS
+#define WIFI_IP_ADDRESS   MY_IP                  // Set to 0.0.0.0 for using DHCP or enter a static IP address
+#endif
+
+#ifdef MY_GW
+#undef  WIFI_GATEWAY
+#define WIFI_GATEWAY      MY_GW                  // if not using DHCP set Gateway IP address
+#endif
+
+#ifdef MY_DNS
+#undef  WIFI_DNS
+#define WIFI_DNS          MY_DNS                 // If not using DHCP set DNS IP address (might be equal to WIFI_GATEWAY)
+#endif
+
+#undef TIME_DST_WEEK
+#define TIME_DST_WEEK          Second
+#undef TIME_DST_MONTH
+#define TIME_DST_MONTH         Mar
+#undef TIME_DST_OFFSET
+#define TIME_DST_OFFSET        -420
+
+#undef TIME_STD_WEEK
+#define TIME_STD_WEEK          First
+#undef TIME_STD_MONTH
+#define TIME_STD_MONTH         Nov
+#undef TIME_STD_OFFSET
+#define TIME_STD_OFFSET        -480
+
+#undef APP_TIMEZONE
+#define APP_TIMEZONE			99
+
+#undef LATITUDE
+#define LATITUDE               37.548271
+#undef LONGITUDE
+#define LONGITUDE              -121.988571
+
+// Enable expression in Rules
+#ifndef USE_EXPRESSION
+#define USE_EXPRESSION
+#endif
+
+/* Feature for using Script
+#ifndef USE_SCRIPT
+#define USE_SCRIPT  // adds about 17k flash size, variable ram size
+#endif
+#ifdef USE_RULES
+#undef USE_RULES
+#endif 
+
+#ifndef USE_BUTTON_EVENT
+#define USE_BUTTON_EVENT
+#endif
+
+#ifndef USE_SCRIPT_JSON_EXPORT
+#define USE_SCRIPT_JSON_EXPORT
+#endif
+
+#ifndef USE_SCRIPT_SUB_COMMAND
+#define USE_SCRIPT_SUB_COMMAND
+#endif
+
+#ifndef USE_SCRIPT_HUE
+#define USE_SCRIPT_HUE
+#endif
+
+#ifndef USE_SCRIPT_STATUS
+#define USE_SCRIPT_STATUS
+#endif
+
+#ifndef SUPPORT_MQTT_EVENT
+#define SUPPORT_MQTT_EVENT
+#endif
+
+#ifndef USE_SENDMAIL
+#define USE_SENDMAIL
+#endif
+
+#ifndef USE_SCRIPT_WEB_DISPLAY
+#define USE_SCRIPT_WEB_DISPLAY
+#endif
+
+//#ifndef USE_TOUCH_BUTTONS
+//#define USE_TOUCH_BUTTONS
+//#endif
+
+#ifndef USE_WEBSEND_RESPONSE
+#define USE_WEBSEND_RESPONSE
+#endif
+
+#ifndef SCRIPT_STRIP_COMMENTS
+#define SCRIPT_STRIP_COMMENTS
+#endif
+
+//#ifndef USE_24C256
+//#define USE_24C256
+//#endif
+
+//#ifndef USE_SCRIPT_FATFS
+//#define USE_SCRIPT_FATFS
+//#endif
+
+//#ifndef USE_SCRIPT_FATFS_EXT
+//#define USE_SCRIPT_FATFS_EXT
+//#endif
+
+//#ifndef SDCARD_DIR
+//#define SDCARD_DIR
+//#endif
+*/
+
+#endif  // _USER_CONFIG_OVERRIDE_H_
